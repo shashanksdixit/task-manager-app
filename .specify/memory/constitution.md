@@ -1,50 +1,75 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+- Version change: none → 1.0.0
+- Modified principles: Added 5 core principles for task workflows, domain modeling, testing, maintainability, and versioning
+- Added sections: Technology and Compliance; Development Workflow
+- Removed sections: none
+- Templates requiring updates: ✅ .specify/templates/plan-template.md, .specify/templates/spec-template.md, .specify/templates/tasks-template.md
+- Follow-up TODOs: none
+-->
+
+# Task Manager App Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. User-Centric Task Workflows
+Every capability MUST be defined by a real task outcome and validated by a user journey.
+- Requirements are expressed as task workflows rather than internal implementation details.
+- Acceptance is measured by successful task completion and clear user-facing results.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Strong Domain Modeling
+The project MUST represent tasks, users, priorities, and state transitions with explicit domain models.
+- Business rules are encoded in the model, not hidden in UI or integration layers.
+- Entities and relationships are documented, tested, and aligned with the app's task-management purpose.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Test-Driven Delivery
+All new functionality MUST start with tests that fail before implementation.
+- Unit tests must cover individual domain rules and component behavior.
+- Integration or contract tests must verify end-to-end task workflows.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Maintainable Architecture
+Code MUST remain simple, modular, and easy to reason about.
+- Components are organized by responsibility and dependencies are explicit.
+- Common concerns such as error handling, logging, validation, and configuration are visible and standardized.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Continuous Quality & Versioning
+The project MUST use semantic versioning and require review for breaking changes.
+- Public-facing changes follow MAJOR.MINOR.PATCH semantics.
+- Incompatible changes are documented, justified, and communicated before merge.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Technology and Compliance
+The app is built as a Spring Boot service with Java, Maven, REST/JSON APIs, and automated tests.
+- No secrets, credentials, or sensitive data may be committed to source control.
+- Dependency upgrades must be reviewed for security and compatibility.
+- Production-readiness requires automated builds, test execution, and environment-specific configuration isolation.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
-
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
-
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+## Development Workflow
+Feature work MUST follow a written spec, a validated plan, and a reviewed PR.
+- Every change must include test coverage and a regression verification step before merge.
+- Complexity must be justified in the PR description and aligned with these principles.
+- Reviewers must verify compliance with the constitution, especially for domain, testing, and compatibility decisions.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+The constitution is the source of truth for project decisions.
+- Amendments require a documented proposal, review by the repository owner or designated maintainer, and an update to affected plans/specs.
+- Version bumps follow semantic versioning:
+  - MAJOR for incompatible APIs or workflow changes,
+  - MINOR for new capabilities or principle additions,
+  - PATCH for clarifications, wording fixes, and non-behavioral refinements.
+- Compliance review is required for every major or minor change.
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+## Tech Stack
+Java 21, Spring Boot, H2, Maven
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+## Architecture
+Layered. Controller -> Service -> Repository 
+Do not return Java entity objects directly. Use data transfer object (dto). Use MapStruct for entity-to-DTO conversion to eliminate boilerplate mapping code.
+
+## Testing
+JUnit, test-first
+
+## API Style
+REST, JSON responses
+
+**Version**: 1.0.0 | **Ratified**: 2026-05-27 | **Last Amended**: 2026-05-27
+

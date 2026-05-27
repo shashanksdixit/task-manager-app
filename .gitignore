@@ -1,3 +1,7 @@
 .github/
-.specify/
+.specify/extensions/
+.specify/integrations/
+.specify/scripts/
+.specify/templates/
+.specify/workflows/
 .vscode/
