@@ -10,3 +10,5 @@ target/
 .DS_Store
 *.log
 .env
+mvnw
+mvnw.cmd
