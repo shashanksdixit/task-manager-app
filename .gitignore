@@ -5,3 +5,8 @@
 .specify/templates/
 .specify/workflows/
 .vscode/
+target/
+*.class
+.DS_Store
+*.log
+.env
