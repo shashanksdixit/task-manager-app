@@ -7,6 +7,8 @@ import com.example.taskmanager.dto.UpdateTaskRequest;
 import com.example.taskmanager.exception.EntityNotFoundException;
 import com.example.taskmanager.mapper.TaskMapper;
 import com.example.taskmanager.model.Task;
+import com.example.taskmanager.model.Priority;
+import com.example.taskmanager.model.Status;
 import com.example.taskmanager.repository.TaskRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -32,8 +34,20 @@ public class TaskService {
         throw new UnsupportedOperationException("Not implemented");
     }
 
+    @Transactional
     public TaskDto create(CreateTaskRequest request) {
-        throw new UnsupportedOperationException("Not implemented");
+        Task entity = taskMapper.toEntity(request);
+
+        if (request.priority() == null) {
+            entity.setPriority(Priority.MEDIUM);
+        }
+
+        if (entity.getStatus() == null) {
+            entity.setStatus(Status.TODO);
+        }
+
+        Task saved = taskRepository.save(entity);
+        return taskMapper.toDto(saved);
     }
 
     public TaskDto update(Long id, UpdateTaskRequest request) {
