@@ -62,12 +62,18 @@ public class TaskService {
         return taskMapper.toDto(savedTask);
     }
 
+    @Transactional
     public TaskDto changeStatus(Long id, TaskStatusUpdateDto request) {
-        throw new UnsupportedOperationException("Not implemented");
+        Task task = findTaskOrThrow(id);
+        task.setStatus(request.status());
+        Task savedTask = taskRepository.save(task);
+        return taskMapper.toDto(savedTask);
     }
 
+    @Transactional
     public void delete(Long id) {
-        throw new UnsupportedOperationException("Not implemented");
+        Task task = findTaskOrThrow(id);
+        taskRepository.delete(task);
     }
 
     private Task findTaskOrThrow(Long id) {
