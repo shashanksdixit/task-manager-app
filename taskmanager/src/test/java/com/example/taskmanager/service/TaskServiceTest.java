@@ -7,6 +7,11 @@ import com.example.taskmanager.model.Status;
 import com.example.taskmanager.model.Task;
 import com.example.taskmanager.repository.TaskRepository;
 import com.example.taskmanager.mapper.TaskMapper;
+import com.example.taskmanager.exception.EntityNotFoundException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -53,6 +58,56 @@ class TaskServiceTest {
 
         verify(taskRepository, times(1)).save(any(Task.class));
         assertNotNull(result);
+    }
+
+    @Test
+    void listAll_ShouldReturnListOfTaskDtos() {
+        Task task1 = new Task();
+        task1.setId(1L);
+        task1.setTitle("Task One");
+
+        Task task2 = new Task();
+        task2.setId(2L);
+        task2.setTitle("Task Two");
+
+        List<Task> tasks = List.of(task1, task2);
+        when(taskRepository.findAllByOrderByCreatedAtDesc()).thenReturn(tasks);
+
+        TaskDto dto = new TaskDto(1L, "Task One", "Description 1", Priority.HIGH, Status.TODO,
+                LocalDate.now(), LocalDateTime.now(), LocalDateTime.now());
+        when(taskMapper.toDto(any(Task.class))).thenReturn(dto);
+
+        List<TaskDto> result = taskService.listAll();
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        verify(taskRepository, times(1)).findAllByOrderByCreatedAtDesc();
+    }
+
+    @Test
+    void getById_ShouldReturnTaskDto_WhenTaskExists() {
+        Task task = new Task();
+        task.setId(1L);
+        task.setTitle("Existing Task");
+
+        when(taskRepository.findById(1L)).thenReturn(Optional.of(task));
+
+        TaskDto dto = new TaskDto(1L, "Existing Task", "Description", Priority.MEDIUM, Status.TODO,
+                LocalDate.now(), LocalDateTime.now(), LocalDateTime.now());
+        when(taskMapper.toDto(any())).thenReturn(dto);
+
+        TaskDto result = taskService.getById(1L);
+
+        assertNotNull(result);
+        verify(taskRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void getById_ShouldThrowEntityNotFoundException_WhenTaskNotFound() {
+        when(taskRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> taskService.getById(99L));
+        verify(taskRepository, times(1)).findById(99L);
     }
 
     @Test

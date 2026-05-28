@@ -11,6 +11,7 @@ import com.example.taskmanager.model.Priority;
 import com.example.taskmanager.model.Status;
 import com.example.taskmanager.repository.TaskRepository;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,11 +28,14 @@ public class TaskService {
     }
 
     public List<TaskDto> listAll() {
-        throw new UnsupportedOperationException("Not implemented");
+        return taskRepository.findAllByOrderByCreatedAtDesc().stream()
+                .map(taskMapper::toDto)
+                .toList();
     }
 
     public TaskDto getById(Long id) {
-        throw new UnsupportedOperationException("Not implemented");
+        Task task = findTaskOrThrow(id);
+        return taskMapper.toDto(task);
     }
 
     @Transactional
@@ -50,8 +54,12 @@ public class TaskService {
         return taskMapper.toDto(saved);
     }
 
+    @Transactional
     public TaskDto update(Long id, UpdateTaskRequest request) {
-        throw new UnsupportedOperationException("Not implemented");
+        Task task = findTaskOrThrow(id);
+        taskMapper.updateEntity(request, task);
+        Task savedTask = taskRepository.save(task);
+        return taskMapper.toDto(savedTask);
     }
 
     public TaskDto changeStatus(Long id, TaskStatusUpdateDto request) {
@@ -63,6 +71,7 @@ public class TaskService {
     }
 
     private Task findTaskOrThrow(Long id) {
-        throw new EntityNotFoundException("Task not found with id " + id);
+        return taskRepository.findById(Objects.requireNonNull(id))
+                .orElseThrow(() -> new EntityNotFoundException("Task not found with id: " + id));
     }
 }
