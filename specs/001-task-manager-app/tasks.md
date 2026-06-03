@@ -123,12 +123,37 @@ description: "Auto-generated task list for Task Manager feature"
 
 ---
 
+## Phase 8: Search & Filter (Amendment v1.1.0)
+
+**Goal**: Enable keyword, status, and priority filtering on `GET /api/tasks` with optional, combinable query parameters.
+
+**Independent Test**: `GET /api/tasks` returns filtered results when query parameters are provided and returns all tasks when no filters are supplied.
+
+### Contracts & Docs
+- [ ] T044 [US6] Update `specs/001-task-manager-app/contracts/api.md` with optional `keyword`, `status`, and `priority` query parameters for GET `/api/tasks`
+
+### Tests (TDD - write first)
+- [ ] T045 [P] [US6] Unit test for `TaskService.listAll` filtering behavior in `backend/src/test/java/com/example/taskmanager/service/TaskServiceFilterTest.java`
+- [ ] T046 [P] [US6] Controller MockMvc test for GET `/api/tasks` with `keyword`, `status`, and `priority` filters in `backend/src/test/java/com/example/taskmanager/controller/TaskControllerFilterTest.java`
+- [ ] T047 [P] [US6] Repository @DataJpaTest for JPA Specification queries in `backend/src/test/java/com/example/taskmanager/repository/TaskRepositorySpecificationTest.java`
+
+### Implementation
+- [ ] T048 [US6] Implement `TaskSpecification` in `backend/src/main/java/com/example/taskmanager/repository/TaskSpecification.java`
+- [ ] T049 [US6] Update `TaskRepository` to extend `JpaSpecificationExecutor<Task>` in `backend/src/main/java/com/example/taskmanager/repository/TaskRepository.java`
+- [ ] T050 [US6] Update `TaskService.listAll` signature and implementation in `backend/src/main/java/com/example/taskmanager/service/TaskService.java`
+- [ ] T051 [US6] Update `TaskController.getAllTasks` in `backend/src/main/java/com/example/taskmanager/controller/TaskController.java` to accept optional `@RequestParam` filters
+- [ ] T052 [US6] Add integration tests for combined search and filter combinations in `backend/src/test/java/com/example/taskmanager/integration/TaskSearchFilterIntegrationTest.java`
+- [ ] T053 [US6] Update frontend search bar in `backend/src/main/resources/static/app.js` and `backend/src/main/resources/static/index.html` to pass optional query parameters to `GET /api/tasks`
+- [ ] T054 [US6] Update `specs/001-task-manager-app/quickstart.md` with search and filter usage examples for GET `/api/tasks`
+
+---
+
 ## Phase N: Polish & Cross-Cutting Concerns
 
-- [ ] T040 [P] Update `specs/001-task-manager-app/quickstart.md` with build, run, and test instructions
-- [ ] T041 [P] Ensure H2 console available at `/h2-console` in dev profile (`backend/src/main/resources/application-dev.properties`)
-- [ ] T042 [P] Documentation: update `README.md` and `specs/001-task-manager-app/` docs with sample data and demo steps
-- [ ] T043 [P] Run formatting (`mvn fmt` or IDE) and ensure tests pass
+- [ ] T055 [P] Update `specs/001-task-manager-app/quickstart.md` with build, run, and test instructions
+- [ ] T056 [P] Ensure H2 console available at `/h2-console` in dev profile (`backend/src/main/resources/application-dev.properties`)
+- [ ] T057 [P] Documentation: update `README.md` and `specs/001-task-manager-app/` docs with sample data and demo steps
+- [ ] T058 [P] Run formatting (`mvn fmt` or IDE) and ensure tests pass
 
 ---
 

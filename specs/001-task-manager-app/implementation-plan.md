@@ -18,6 +18,11 @@ Goals:
 - Provide a tiny frontend that consumes the API.
 - Include automated tests for controllers, services, and repositories.
 
+## Amendment History
+| Version | Change |
+|---|---|
+| 1.1.0 | Added Phase 6 for search and filter (FR-6 to FR-9) |
+
 ## Phases
 
 ### Phase 0 — Research & Decisions
@@ -66,6 +71,24 @@ Goals:
 - Run all tests and confirm 100% pass.
 - Verify all FR items (FR-1 through FR-5) manually.
 - Create `quickstart.md` with build, run, and test instructions.
+
+### Phase 6 — Search & Filter
+- Implement dynamic filtering for `GET /api/tasks` using Spring Data JPA Specifications.
+- Add `TaskSpecification` class to build predicates dynamically for:
+  - `keyword` matching title or description using `LIKE %keyword%` (case-insensitive)
+  - `status` matching the `Status` enum
+  - `priority` matching the `Priority` enum
+- Update `TaskRepository` to extend `JpaSpecificationExecutor<Task>`.
+- Update `TaskService.listAll()` to accept optional filter parameters: `keyword`, `status`, `priority`.
+- Update `TaskController.getAllTasks()` to accept `@RequestParam` parameters for `keyword`, `status`, and `priority`.
+- Ensure all parameters are optional and that omitting them returns all tasks.
+- Update frontend search bar to pass query params to the API and refresh the task list.
+- Verify combined filter behavior for `GET /api/tasks?keyword=fix&status=TODO&priority=HIGH`.
+- Write tests FIRST (Constitution Article III):
+  * Unit test TaskService.listAll() with filter params
+  * MockMvc test GET /api/tasks with keyword, status, priority params
+  * Integration test for combined filter behavior
+- Update `contracts/api.md` to reflect new query parameters on GET /api/tasks.
 
 Artifacts (to generate):
 - `research.md` — decisions and alternatives
