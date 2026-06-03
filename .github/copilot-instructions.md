@@ -2,5 +2,5 @@
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the implementation plan:
 
-specs/001-task-manager-app/implementation-plan.md
+specs/002-react-frontend/plan.md
 <!-- SPECKIT END -->
