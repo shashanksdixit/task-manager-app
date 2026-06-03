@@ -1,6 +1,6 @@
 # Task Manager App
 
-A simple task management application built with Java and Spring Boot. It provides a REST API for creating, reading, updating, and deleting tasks, with a lightweight vanilla JavaScript frontend.
+A simple task management application built with Java and Spring Boot and **Github Spec-kit**. It provides a REST API for creating, reading, updating, and deleting tasks, with a lightweight vanilla JavaScript frontend.
 
 ## Tech Stack
 
