@@ -40,7 +40,7 @@ class TaskServiceDeleteTest {
         taskService.delete(1L);
 
         verify(taskRepository, times(1)).findById(1L);
-        verify(taskRepository, times(1)).delete(task);
+        verify(taskRepository).deleteById(1L);
     }
 
     @Test
@@ -50,6 +50,6 @@ class TaskServiceDeleteTest {
         assertThrows(EntityNotFoundException.class, () -> taskService.delete(99L));
 
         verify(taskRepository, times(1)).findById(99L);
-        verify(taskRepository, never()).delete(any());
+        verify(taskRepository, never()).deleteById(any());
     }
 }

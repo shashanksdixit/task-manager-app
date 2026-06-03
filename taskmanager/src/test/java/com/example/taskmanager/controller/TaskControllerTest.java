@@ -72,7 +72,7 @@ public class TaskControllerTest {
         TaskDto task1 = new TaskDto(1L, "Task One", "Description one", Priority.HIGH, Status.TODO, null, null, null);
         TaskDto task2 = new TaskDto(2L, "Task Two", "Description two", Priority.MEDIUM, Status.IN_PROGRESS, null, null, null);
 
-        Mockito.when(taskService.listAll()).thenReturn(List.of(task1, task2));
+        Mockito.when(taskService.listAll(null, null, null)).thenReturn(List.of(task1, task2));
 
         mockMvc.perform(get("/api/tasks"))
                 .andExpect(status().isOk())

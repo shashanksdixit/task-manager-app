@@ -5,9 +5,35 @@ Base path: `/api/tasks`
 Endpoints:
 
 1. GET /api/tasks
-- Description: List all tasks
+- Description: List tasks with optional filtering
+- Query parameters:
+  - `keyword` (String, optional): case-insensitive search on title and description
+  - `status` (String, optional): filter by `Status` enum value (`TODO`|`IN_PROGRESS`|`COMPLETE`)
+  - `priority` (String, optional): filter by `Priority` enum value (`LOW`|`MEDIUM`|`HIGH`)
+  - Note: all parameters are optional and combinable (NFR-6)
 - Response: 200 OK
 - Body: JSON array of `TaskDto`
+- Example requests:
+  - `GET /api/tasks` (returns all tasks)
+  - `GET /api/tasks?keyword=fix`
+  - `GET /api/tasks?status=TODO`
+  - `GET /api/tasks?priority=HIGH`
+  - `GET /api/tasks?keyword=fix&status=TODO&priority=HIGH`
+- Example response:
+
+  [
+    {
+      "id": 3,
+      "title": "Fix login bug",
+      "description": "Resolve the bug preventing users from signing in",
+      "priority": "HIGH",
+      "status": "TODO",
+      "dueDate": "2026-06-10",
+      "createdAt": "2026-05-28T09:00:00Z",
+      "updatedAt": "2026-05-28T09:00:00Z"
+    }
+  ]
+
 
 2. GET /api/tasks/{id}
 - Description: Get task by id

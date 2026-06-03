@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import org.springframework.data.jpa.domain.Specification;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -71,17 +72,17 @@ class TaskServiceTest {
         task2.setTitle("Task Two");
 
         List<Task> tasks = List.of(task1, task2);
-        when(taskRepository.findAllByOrderByCreatedAtDesc()).thenReturn(tasks);
+        when(taskRepository.findAll(any(Specification.class))).thenReturn(tasks);
 
         TaskDto dto = new TaskDto(1L, "Task One", "Description 1", Priority.HIGH, Status.TODO,
                 LocalDate.now(), LocalDateTime.now(), LocalDateTime.now());
         when(taskMapper.toDto(any(Task.class))).thenReturn(dto);
 
-        List<TaskDto> result = taskService.listAll();
+        List<TaskDto> result = taskService.listAll(null, null, null);
 
         assertNotNull(result);
         assertEquals(2, result.size());
-        verify(taskRepository, times(1)).findAllByOrderByCreatedAtDesc();
+        verify(taskRepository, times(1)).findAll(any(Specification.class));
     }
 
     @Test

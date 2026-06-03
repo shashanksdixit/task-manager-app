@@ -4,8 +4,10 @@ let tasks = [];
 let editingTaskId = null;
 
 const taskList = document.getElementById('task-list');
+const searchInput = document.getElementById('search-input');
 const statusFilter = document.getElementById('status-filter');
 const priorityFilter = document.getElementById('priority-filter');
+const clearFiltersButton = document.getElementById('clear-filters-button');
 const newTaskButton = document.getElementById('new-task-button');
 const taskDialogBackdrop = document.getElementById('task-dialog-backdrop');
 const taskDialog = document.getElementById('task-dialog');
@@ -22,7 +24,23 @@ const confirmCancelButton = document.getElementById('confirm-cancel-button');
 
 async function fetchTasks() {
   try {
-    const response = await fetch(API_BASE);
+    const params = new URLSearchParams();
+    const keyword = searchInput.value.trim();
+    const selectedStatus = statusFilter.value;
+    const selectedPriority = priorityFilter.value;
+
+    if (keyword) {
+      params.set('keyword', keyword);
+    }
+    if (selectedStatus && selectedStatus !== 'ALL') {
+      params.set('status', selectedStatus);
+    }
+    if (selectedPriority && selectedPriority !== 'ALL') {
+      params.set('priority', selectedPriority);
+    }
+
+    const url = params.toString() ? `${API_BASE}?${params.toString()}` : API_BASE;
+    const response = await fetch(url);
     if (!response.ok) {
       throw new Error(`Failed to fetch tasks: ${response.status} ${response.statusText}`);
     }
@@ -34,21 +52,12 @@ async function fetchTasks() {
 }
 
 function renderTasks() {
-  const selectedStatus = statusFilter.value;
-  const selectedPriority = priorityFilter.value;
-
-  const filteredTasks = tasks.filter((task) => {
-    const statusMatches = selectedStatus === 'ALL' || task.status === selectedStatus;
-    const priorityMatches = selectedPriority === 'ALL' || task.priority === selectedPriority;
-    return statusMatches && priorityMatches;
-  });
-
-  if (!filteredTasks.length) {
+  if (!tasks.length) {
     taskList.innerHTML = '<div style="grid-column:1/-1; padding: 2rem; background: #fff; border-radius: 1rem; text-align: center; box-shadow: 0 12px 24px rgba(15,23,42,0.08);">No tasks found</div>';
     return;
   }
 
-  taskList.innerHTML = filteredTasks.map((task) => {
+  taskList.innerHTML = tasks.map((task) => {
     const dueDateMarkup = task.dueDate ? `<div class="warning-pill">${isPastDue(task.dueDate) ? '⚠️ ' : ''}${formatDate(task.dueDate)}</div>` : '';
     const statusClass = getStatusBadgeClass(task.status);
     const priorityClass = getPriorityBadgeClass(task.priority);
@@ -344,12 +353,27 @@ function showConfirmDialog() {
   });
 }
 
+function debounce(fn, delay) {
+  let timeoutId;
+  return (...args) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn(...args), delay);
+  };
+}
+
 function bindEvents() {
   newTaskButton.addEventListener('click', () => openModal());
   taskForm.addEventListener('submit', handleFormSubmit);
   taskCancelButton.addEventListener('click', closeModal);
-  statusFilter.addEventListener('change', renderTasks);
-  priorityFilter.addEventListener('change', renderTasks);
+  statusFilter.addEventListener('change', fetchTasks);
+  priorityFilter.addEventListener('change', fetchTasks);
+  searchInput.addEventListener('input', debounce(fetchTasks, 300));
+  clearFiltersButton.addEventListener('click', () => {
+    searchInput.value = '';
+    statusFilter.value = 'ALL';
+    priorityFilter.value = 'ALL';
+    fetchTasks();
+  });
   taskDialog.addEventListener('cancel', (event) => {
     event.preventDefault();
     closeModal();

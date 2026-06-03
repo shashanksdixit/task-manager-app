@@ -88,7 +88,7 @@
 
     .filter-panel {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 1rem;
       margin-bottom: 1.5rem;
       padding: 1.2rem;
@@ -106,13 +106,30 @@
       font-size: 0.95rem;
     }
 
-    .filter-panel select {
+    .filter-panel select,
+    .filter-panel input {
       width: 100%;
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       padding: 0.85rem 1rem;
       background: var(--surface-strong);
       color: var(--text);
+    }
+
+    .filter-panel button {
+      height: min-content;
+      align-self: flex-end;
+      padding: 0.9rem 1rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-strong);
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .filter-panel button:hover {
+      background: #f3f4f6;
     }
 
     #task-list {
@@ -384,6 +401,10 @@
     </header>
 
     <section class="filter-panel" aria-label="Task filters">
+      <label for="search-input">
+        Search
+        <input id="search-input" name="search-input" type="search" placeholder="Search by keyword..." />
+      </label>
       <label for="status-filter">
         Status
         <select id="status-filter" name="status-filter">
@@ -402,7 +423,7 @@
           <option value="HIGH">HIGH</option>
         </select>
       </label>
-      <div aria-hidden="true"></div>
+      <button type="button" id="clear-filters-button">Clear</button>
     </section>
 
     <section id="task-list" aria-label="Task list">

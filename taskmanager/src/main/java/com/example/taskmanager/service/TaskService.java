@@ -10,8 +10,10 @@ import com.example.taskmanager.model.Task;
 import com.example.taskmanager.model.Priority;
 import com.example.taskmanager.model.Status;
 import com.example.taskmanager.repository.TaskRepository;
+import com.example.taskmanager.repository.TaskSpecification;
 import java.util.List;
 import java.util.Objects;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +29,9 @@ public class TaskService {
         this.taskMapper = taskMapper;
     }
 
-    public List<TaskDto> listAll() {
-        return taskRepository.findAllByOrderByCreatedAtDesc().stream()
+    public List<TaskDto> listAll(String keyword, Status status, Priority priority) {
+        Specification<Task> specification = TaskSpecification.withFilters(keyword, status, priority);
+        return taskRepository.findAll(specification).stream()
                 .map(taskMapper::toDto)
                 .toList();
     }
@@ -72,8 +75,8 @@ public class TaskService {
 
     @Transactional
     public void delete(Long id) {
-        Task task = findTaskOrThrow(id);
-        taskRepository.delete(task);
+        findTaskOrThrow(id);
+        taskRepository.deleteById(id);
     }
 
     private Task findTaskOrThrow(Long id) {
