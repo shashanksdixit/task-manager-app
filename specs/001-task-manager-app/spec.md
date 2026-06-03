@@ -1,6 +1,7 @@
 # Task Manager (Full-Stack)
 
 Short name: task-manager-app
+Version: 1.1.0
 
 ## Summary
 
@@ -21,6 +22,7 @@ Users need a lightweight interface to track short-lived tasks and their statuses
 - Edit task details to correct or extend information.
 - Change a task's status to TODO, IN_PROGRESS, or COMPLETE.
 - Delete tasks when they are no longer needed.
+- Search and filter tasks by keyword, status, or priority.
 
 ## Key Data
 
@@ -68,13 +70,18 @@ Users need a lightweight interface to track short-lived tasks and their statuses
    - Steps: Trigger delete on task → confirm
    - Acceptance: Task is removed from list and no longer returned by API.
 
+6. Search and Filter Tasks
+   - Actor: End user
+   - Steps: Enter keyword in search box → optionally select status/priority filters → results update
+   - Acceptance: Only matching tasks are shown; removing filters restores full list.
+
 ## Functional Requirements (Testable)
 
 1. FR-1: Create Task
    - Given a user provides a valid `title`, when they submit the create form, then a new task is persisted and returned by the tasks list endpoint.
 
 2. FR-2: Retrieve Tasks
-   - Given tasks exist, when the user opens the task list, then the system returns all tasks with fields: id, title, description, priority, status, dueDate, createdAt, updatedAt.
+   - Given tasks exist, when the user opens the task list or requests `GET /api/tasks` with optional `keyword`, `status`, or `priority`, then the system returns matching tasks with fields: id, title, description, priority, status, dueDate, createdAt, updatedAt.
 
 3. FR-3: Update Task
    - Given a task exists, when the user sends an update with valid fields, then the stored task is updated accordingly.
@@ -85,11 +92,23 @@ Users need a lightweight interface to track short-lived tasks and their statuses
 5. FR-5: Delete Task
    - Given a task exists, when the user requests deletion and confirms, then the task is removed and subsequent retrievals do not include it.
 
+6. FR-6: Keyword Search
+   - Given a user provides a keyword, when they call `GET /api/tasks?keyword=fix`, then only tasks whose title or description contains the keyword (case-insensitive) are returned.
+
+7. FR-7: Server-side Status Filter
+   - Given a user provides a status, when they call `GET /api/tasks?status=TODO`, then only tasks with that status are returned.
+
+8. FR-8: Server-side Priority Filter
+   - Given a user provides a priority, when they call `GET /api/tasks?priority=HIGH`, then only tasks with that priority are returned.
+
+9. FR-9: Combined Filters
+   - Given a user provides multiple query parameters, when they call `GET /api/tasks?keyword=fix&status=TODO&priority=HIGH`, then only tasks matching all provided filters are returned.
+
 ## Success Criteria (Measurable)
 
 - SC-1: Core task flows (create, view, update, change status, delete) succeed in 95% of manual checks across 20 sample tasks.
 - SC-2: A typical user can create and view a task in under 2 minutes (end-to-end form → list confirmation).
-- SC-3: API endpoints return expected resources with correct fields for 100% of requests made by the frontend in functional tests.
+- SC-3: API endpoints return expected resources with correct fields for 100% of requests made by the frontend in functional tests, including filtered and keyword search requests.
 
 ## Key Entities
 
@@ -121,5 +140,13 @@ Users need a lightweight interface to track short-lived tasks and their statuses
 - NFR-2: Frontend must work on latest Chrome, Firefox, and Edge.
 - NFR-3: Application must start with a pre-loaded set of 3 sample tasks for demo purposes.
 - NFR-4: H2 console must be accessible at /h2-console for development inspection.
+- NFR-5: Search must return results within 300ms for up to 1000 tasks.
+- NFR-6: All filter parameters are optional — omitting them returns all tasks.
+
+## Amendment Log
+
+| Version | Date | Change | Reason |
+|---|---|---|---|
+| 1.1.0 | today | Added FR-6, FR-7, FR-8, NFR-5, NFR-6. Updated FR-2 | User feedback: task list too long |
 
 
