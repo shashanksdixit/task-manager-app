@@ -11,6 +11,7 @@ import com.example.taskmanager.model.Priority;
 import com.example.taskmanager.model.Status;
 import com.example.taskmanager.repository.TaskRepository;
 import com.example.taskmanager.repository.TaskSpecification;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import org.springframework.data.jpa.domain.Specification;
@@ -39,6 +40,14 @@ public class TaskService {
     public TaskDto getById(Long id) {
         Task task = findTaskOrThrow(id);
         return taskMapper.toDto(task);
+    }
+
+    public List<TaskDto> getUrgentTasks() {
+        LocalDate today = LocalDate.now();
+        return taskRepository.findByDueDateBetweenAndStatusNot(today, today.plusDays(1), Status.COMPLETE)
+                .stream()
+                .map(taskMapper::toDto)
+                .toList();
     }
 
     @Transactional

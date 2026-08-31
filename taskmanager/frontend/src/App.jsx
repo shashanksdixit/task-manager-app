@@ -3,8 +3,12 @@ import SearchBar from './components/SearchBar';
 import TaskList from './components/TaskList';
 import TaskForm from './components/TaskForm';
 import ConfirmDialog from './components/ConfirmDialog';
+import TaskSummary from './components/TaskSummary';
+import UrgentSection from './components/UrgentSection';
+import sortTasks from './components/sortTasks';
 import {
   fetchTasks,
+  fetchUrgentTasks,
   createTask,
   updateTask,
   deleteTask,
@@ -14,6 +18,7 @@ import './App.css';
 
 function App() {
   const [tasks, setTasks] = useState([]);
+  const [urgentTasks, setUrgentTasks] = useState([]);
   const [filters, setFilters] = useState({ keyword: '', status: '', priority: '' });
   const [editingTask, setEditingTask] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -27,7 +32,7 @@ function App() {
 
     try {
       const result = await fetchTasks(filters);
-      setTasks(result || []);
+      setTasks(sortTasks(result) || []);
     } catch (err) {
       setError(err?.message || 'Failed to load tasks.');
     } finally {
@@ -35,8 +40,18 @@ function App() {
     }
   };
 
+  const loadUrgentTasks = async () => {
+    try {
+      const result = await fetchUrgentTasks();
+      setUrgentTasks(result || []);
+    } catch (err) {
+      setError(err?.message || 'Failed to load urgent tasks.');
+    }
+  };
+
   useEffect(() => {
     loadTasks();
+    loadUrgentTasks();
   }, [filters]);
 
   const handleOpenCreate = () => {
@@ -62,6 +77,7 @@ function App() {
         await createTask(formData);
       }
       await loadTasks();
+      await loadUrgentTasks();
       handleCloseForm();
     } catch (err) {
       setError(err?.message || 'Failed to save task.');
@@ -80,6 +96,7 @@ function App() {
     try {
       await deleteTask(deletingTaskId);
       await loadTasks();
+      await loadUrgentTasks();
     } catch (err) {
       setError(err?.message || 'Failed to delete task.');
     } finally {
@@ -95,6 +112,7 @@ function App() {
     try {
       await changeTaskStatus(taskId, newStatus);
       await loadTasks();
+      await loadUrgentTasks();
     } catch (err) {
       setError(err?.message || 'Failed to update task status.');
     }
@@ -108,6 +126,20 @@ function App() {
     setFilters({ keyword: '', status: '', priority: '' });
   };
 
+  const counts = tasks.reduce(
+    (acc, task) => {
+      if (task.status === 'TODO') {
+        acc.todo += 1;
+      } else if (task.status === 'IN_PROGRESS') {
+        acc.inProgress += 1;
+      } else if (task.status === 'COMPLETE') {
+        acc.complete += 1;
+      }
+      return acc;
+    },
+    { total: tasks.length, todo: 0, inProgress: 0, complete: 0 },
+  );
+
   return (
     <div className="app">
       <header className="app-header">
@@ -118,6 +150,15 @@ function App() {
       </header>
 
       {error && <div className="error-banner">{error}</div>}
+
+      <TaskSummary counts={counts} />
+
+      <UrgentSection
+        urgentTasks={urgentTasks}
+        onEdit={handleOpenEdit}
+        onDelete={handleDeleteClick}
+        onStatusChange={handleStatusChange}
+      />
 
       <SearchBar
         filters={filters}

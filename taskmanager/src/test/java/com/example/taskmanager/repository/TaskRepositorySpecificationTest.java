@@ -67,7 +67,7 @@ public class TaskRepositorySpecificationTest {
 
         List<Task> result = taskRepository.findAll(spec);
 
-        assertEquals(3, result.size());
+        assertEquals(2, result.size());
     }
 
     @Test

@@ -41,6 +41,14 @@ export async function fetchTasks(filters = {}) {
   return handleResponse(response);
 }
 
+export async function fetchUrgentTasks() {
+  const response = await fetch(`${API_BASE}/urgent`, {
+    method: 'GET',
+  });
+
+  return handleResponse(response);
+}
+
 export async function createTask(taskData) {
   const response = await fetch(API_BASE, {
     method: 'POST',

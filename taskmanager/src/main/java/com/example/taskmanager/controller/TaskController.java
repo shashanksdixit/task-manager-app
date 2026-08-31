@@ -43,6 +43,11 @@ public class TaskController {
         return ResponseEntity.ok(tasks);
     }
 
+    @GetMapping("/urgent")
+    public ResponseEntity<List<TaskDto>> getUrgentTasks() {
+        return ResponseEntity.ok(taskService.getUrgentTasks());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<TaskDto> getTaskById(@PathVariable Long id) {
         TaskDto task = taskService.getById(id);
