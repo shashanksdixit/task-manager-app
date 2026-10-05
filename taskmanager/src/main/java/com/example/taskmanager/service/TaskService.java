@@ -13,6 +13,8 @@ import com.example.taskmanager.repository.TaskRepository;
 import com.example.taskmanager.repository.TaskSpecification;
 import java.util.List;
 import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class TaskService {
+
+    private static final Logger log = LoggerFactory.getLogger(TaskService.class);
 
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
@@ -77,6 +81,7 @@ public class TaskService {
     public void delete(Long id) {
         findTaskOrThrow(id);
         taskRepository.deleteById(id);
+        log.info("The task id {} is deleted", id);
     }
 
     private Task findTaskOrThrow(Long id) {
