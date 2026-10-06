@@ -69,6 +69,18 @@ public class TaskIntegrationTest {
     }
 
     @Test
+    void createTask_ShouldReturn400_WhenDueDateInPast() throws Exception {
+        Map<String, Object> request = new HashMap<>();
+        request.put("title", "Past Due Task");
+        request.put("dueDate", "2020-01-01");
+
+        mockMvc.perform(post("/api/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void getAllTasks_ShouldReturnSeededTasks() throws Exception {
         mockMvc.perform(get("/api/tasks"))
                 .andExpect(status().isOk())

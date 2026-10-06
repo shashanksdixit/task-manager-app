@@ -238,6 +238,15 @@ async function handleFormSubmit(event) {
   const priority = taskPriorityInput.value;
   const dueDate = taskDueDateInput.value;
 
+  if (!editingTaskId && dueDate) {
+    const today = new Date();
+    const todayString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    if (dueDate < todayString) {
+      alert('Due date cannot be in the past.');
+      return;
+    }
+  }
+
   const formData = {
     title,
     priority,

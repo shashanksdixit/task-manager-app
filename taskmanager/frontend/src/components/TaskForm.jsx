@@ -34,12 +34,22 @@ const TaskForm = ({ isOpen, task, onSave, onCancel }) => {
       return;
     }
 
-    onSave({
+    const today = new Date();
+    const todayString = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    if (!task && dueDate && dueDate < todayString) {
+      setError('Due date cannot be in the past.');
+      return;
+    }
+
+    const formData = {
       title: title.trim(),
       description: description.trim(),
       priority,
-      dueDate,
-    });
+    };
+    if (dueDate) {
+      formData.dueDate = dueDate;
+    }
+    onSave(formData);
   };
 
   return (

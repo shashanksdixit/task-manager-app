@@ -10,6 +10,8 @@ const handleResponse = async (response) => {
     const errorData = await response.json();
     if (errorData && errorData.message) {
       errorMessage = errorData.message;
+    } else if (errorData && errorData.messages && errorData.messages.length) {
+      errorMessage = errorData.messages.join(', ');
     }
   } catch (error) {
     // Ignore JSON parse errors and keep statusText
