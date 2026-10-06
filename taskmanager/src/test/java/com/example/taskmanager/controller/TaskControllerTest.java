@@ -68,6 +68,19 @@ public class TaskControllerTest {
     }
 
     @Test
+    void createTask_ShouldReturn400_WhenDueDateInPast() throws Exception {
+        String requestJson = "{" +
+                "\"title\":\"Past Due Task\"," +
+                "\"dueDate\":\"2020-01-01\"" +
+                "}";
+
+        mockMvc.perform(post("/api/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void getAllTasks_ShouldReturn200_WithTaskList() throws Exception {
         TaskDto task1 = new TaskDto(1L, "Task One", "Description one", Priority.HIGH, Status.TODO, null, null, null);
         TaskDto task2 = new TaskDto(2L, "Task Two", "Description two", Priority.MEDIUM, Status.IN_PROGRESS, null, null, null);

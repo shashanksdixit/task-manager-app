@@ -2,6 +2,7 @@ package com.example.taskmanager.dto;
 
 import com.example.taskmanager.model.Priority;
 import java.time.LocalDate;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -12,6 +13,7 @@ public record CreateTaskRequest(
         @Size(max = 2000, message = "Description must not exceed 2000 characters")
         String description,
         Priority priority,
+        @FutureOrPresent(message = "Due date must not be in the past")
         LocalDate dueDate
 ) {
 }
