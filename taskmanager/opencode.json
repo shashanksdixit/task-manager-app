@@ -1,4 +1,68 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "autoupdate": false
+  "autoupdate": false,
+  "model": "opencode/big-pickle",
+  "small_model": "opencode/nemotron-3-ultra-free",
+  "lsp": true,
+  "reference": {
+    "specs": {
+      "path": "../specs",
+      "description": "Product/feature specs for this project"
+    }
+  },
+  "mcp": {
+    "repo-docs": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "D:/Shashank/Train/git-spec-kit/task-manager-app/specs"
+      ],
+      "enabled": true
+    }
+  },
+  "permission": {
+    "edit": "ask",
+    "bash": {
+      "*": "allow",
+      "git push*": "ask",
+      "Remove-Item*": "deny"
+    },
+    "repo-docs_*": "ask"
+  },
+  "agent": {
+    "code-reviewer": {
+      "description": "Reviews code for quality, security, and maintainability issues. Read-only — never edits files.",
+      "mode": "primary",
+      "model": "opencode/nemotron-3-ultra-free",
+      "prompt": "You are a strict, senior code reviewer. Focus on security, performance, and maintainability. Never suggest edits inline — describe issues and recommendations only. Never use write/edit tools.",
+      "permission": {
+        "edit": "deny",
+        "bash": "ask"
+      }
+    },
+    "safe-reviewer": {
+      "description": "Architecturally read-only reviewer. Cannot edit or run shell commands under any circumstances — enforced by permission config, not prompt instruction.",
+      "mode": "primary",
+      "model": "opencode/nemotron-3-ultra-free",
+      "prompt": "You are a strict, senior code reviewer with access to the project's spec documents under specs/. Cross-check the code under review against the relevant spec where applicable. Categorize findings by severity (High/Medium/Low). Never suggest edits inline — describe issues and recommendations only.",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
+    }
+  },
+  "command": {
+    "review": {
+      "template": "Review $ARGUMENTS for security, performance, and maintainability issues. Categorize findings by severity (High/Medium/Low). Do not make any edits — describe issues only.",
+      "description": "Run a structured code review on a file",
+      "agent": "code-reviewer"
+    },
+    "audit-review": {
+      "template": "Review $ARGUMENTS for security, performance, and maintainability issues, cross-checking against the relevant spec in specs/ if one applies. Categorize findings by severity (High/Medium/Low). Do not make any edits — describe issues only.",
+      "description": "Run a read-only, spec-aware, hook-audited code review",
+      "agent": "safe-reviewer"
+    }
+  }
 }

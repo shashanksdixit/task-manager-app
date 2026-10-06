@@ -19,8 +19,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,15 +44,6 @@ class TaskServiceUpdateTest {
 
         when(taskRepository.findById(1L)).thenReturn(Optional.of(existingTask));
 
-        Task updatedTask = new Task();
-        updatedTask.setId(1L);
-        updatedTask.setTitle("Updated Title");
-        updatedTask.setDescription("New desc");
-        updatedTask.setPriority(Priority.LOW);
-        updatedTask.setStatus(Status.TODO);
-
-        when(taskRepository.save(any(Task.class))).thenReturn(updatedTask);
-
         TaskDto updatedDto = new TaskDto(1L, "Updated Title", "New desc", Priority.LOW,
                 Status.TODO, null, null, null);
         when(taskMapper.toDto(any(Task.class))).thenReturn(updatedDto);
@@ -63,7 +52,6 @@ class TaskServiceUpdateTest {
                 new UpdateTaskRequest("Updated Title", "New desc", Priority.LOW, null));
 
         assertNotNull(result);
-        verify(taskRepository, times(1)).save(any(Task.class));
     }
 
     @Test

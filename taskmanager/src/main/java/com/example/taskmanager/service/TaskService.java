@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
+//Reviewed
 public class TaskService {
 
     private static final Logger log = LoggerFactory.getLogger(TaskService.class);
@@ -74,16 +75,14 @@ public class TaskService {
     public TaskDto update(Long id, UpdateTaskRequest request) {
         Task task = findTaskOrThrow(id);
         taskMapper.updateEntity(request, task);
-        Task savedTask = taskRepository.save(task);
-        return taskMapper.toDto(savedTask);
+        return taskMapper.toDto(task);
     }
 
     @Transactional
     public TaskDto changeStatus(Long id, TaskStatusUpdateDto request) {
         Task task = findTaskOrThrow(id);
         task.setStatus(request.status());
-        Task savedTask = taskRepository.save(task);
-        return taskMapper.toDto(savedTask);
+        return taskMapper.toDto(task);
     }
 
     @Transactional
@@ -96,5 +95,9 @@ public class TaskService {
     private Task findTaskOrThrow(Long id) {
         return taskRepository.findById(Objects.requireNonNull(id))
                 .orElseThrow(() -> new EntityNotFoundException("Task not found with id: " + id));
+    }
+
+    public String badMethod() {
+        return "5";
     }
 }

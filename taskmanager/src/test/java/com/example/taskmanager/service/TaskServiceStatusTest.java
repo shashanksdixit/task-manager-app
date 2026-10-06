@@ -11,7 +11,6 @@ import com.example.taskmanager.repository.TaskRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -40,11 +39,6 @@ class TaskServiceStatusTest {
 
         when(taskRepository.findById(1L)).thenReturn(Optional.of(task));
 
-        Task saved = new Task();
-        saved.setId(1L);
-        saved.setStatus(Status.IN_PROGRESS);
-        when(taskRepository.save(any())).thenReturn(saved);
-
         TaskDto dto = new TaskDto(1L, "Test", null, Priority.MEDIUM, Status.IN_PROGRESS, null, null, null);
         when(taskMapper.toDto(any())).thenReturn(dto);
 
@@ -52,7 +46,6 @@ class TaskServiceStatusTest {
 
         assertNotNull(result);
         assertEquals(Status.IN_PROGRESS, result.status());
-        verify(taskRepository, times(1)).save(any());
     }
 
     @Test
@@ -75,18 +68,12 @@ class TaskServiceStatusTest {
 
         when(taskRepository.findById(1L)).thenReturn(Optional.of(task));
 
-        when(taskRepository.save(any(Task.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
         TaskDto dto = new TaskDto(1L, "Original", null, Priority.HIGH, Status.COMPLETE, null, null, null);
         when(taskMapper.toDto(any())).thenReturn(dto);
 
         TaskDto result = taskService.changeStatus(1L, new TaskStatusUpdateDto(Status.COMPLETE));
 
-        ArgumentCaptor<Task> captor = ArgumentCaptor.forClass(Task.class);
-        verify(taskRepository, times(1)).save(captor.capture());
-
-        Task saved = captor.getValue();
-        assertEquals("Original", saved.getTitle());
-        assertEquals(Status.COMPLETE, saved.getStatus());
+        assertEquals("Original", task.getTitle());
+        assertEquals(Status.COMPLETE, task.getStatus());
     }
 }
