@@ -59,6 +59,7 @@ function renderTasks() {
 
   taskList.innerHTML = tasks.map((task) => {
     const dueDateMarkup = task.dueDate ? `<div class="warning-pill">${isPastDue(task.dueDate) ? '⚠️ ' : ''}${formatDate(task.dueDate)}</div>` : '';
+    const createdDateMarkup = task.createdAt ? `<div class="created-date">Created: ${formatDate(task.createdAt)}</div>` : '';
     const statusClass = getStatusBadgeClass(task.status);
     const priorityClass = getPriorityBadgeClass(task.priority);
 
@@ -73,6 +74,7 @@ function renderTasks() {
         </div>
         <div class="task-body">${task.description ? escapeHtml(task.description) : 'No description provided.'}</div>
         ${dueDateMarkup}
+        ${createdDateMarkup}
         <div class="task-footer">
           <div class="task-actions">
             <button type="button" data-action="edit" data-id="${task.id}">Edit</button>
