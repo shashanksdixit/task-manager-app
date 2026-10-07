@@ -8,6 +8,16 @@ const truncateText = (text, maxLength) => {
   return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
 };
 
+const formatCreatedDate = (value) => {
+  if (!value) {
+    return '';
+  }
+  const date = new Date(value);
+  return Number.isNaN(date.getTime())
+    ? ''
+    : date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+};
+
 const TaskCard = ({ task, onEdit, onDelete, onStatusChange }) => {
   const isPastDue = task.dueDate && new Date(task.dueDate) < new Date();
   const priorityClass = `priority-${task.priority?.toLowerCase() || 'medium'}`;
@@ -21,6 +31,11 @@ const TaskCard = ({ task, onEdit, onDelete, onStatusChange }) => {
 
       <div className="task-meta">
         <span className={`priority-badge ${priorityClass}`}>{task.priority || 'MEDIUM'}</span>
+        {formatCreatedDate(task.createdAt) && (
+          <span className="created-date">
+            Created: {formatCreatedDate(task.createdAt)}
+          </span>
+        )}
         {task.dueDate && (
           <span className="due-date">
             Due: {task.dueDate}{' '}

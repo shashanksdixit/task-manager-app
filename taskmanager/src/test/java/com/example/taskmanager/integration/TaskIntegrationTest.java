@@ -316,4 +316,27 @@ public class TaskIntegrationTest {
         mockMvc.perform(get("/api/tasks/99999"))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void createTask_ShouldReturnCreatedAt() throws Exception {
+        Map<String, Object> request = new HashMap<>();
+        request.put("title", "Created Date Task");
+        request.put("priority", "MEDIUM");
+
+        String requestJson = objectMapper.writeValueAsString(request);
+
+        mockMvc.perform(post("/api/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.createdAt").exists())
+                .andExpect(jsonPath("$.updatedAt").exists());
+    }
+
+    @Test
+    void getAllTasks_ShouldReturnCreatedAtForEveryTask() throws Exception {
+        mockMvc.perform(get("/api/tasks"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].createdAt").isNotEmpty());
+    }
 }
