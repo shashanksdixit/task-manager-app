@@ -68,6 +68,16 @@ public class TaskSearchFilterIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(task4)))
                 .andExpect(status().isCreated());
+
+        // Create task 5: "Write report", due date=2026-10-20, priority=MEDIUM
+        Map<String, Object> task5 = new HashMap<>();
+        task5.put("title", "Write report");
+        task5.put("priority", "MEDIUM");
+        task5.put("dueDate", "2026-10-20");
+        mockMvc.perform(post("/api/tasks")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(task5)))
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -103,5 +113,12 @@ public class TaskSearchFilterIntegrationTest {
         mockMvc.perform(get("/api/tasks"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(4))));
+    }
+
+    @Test
+    void filter_ShouldReturnMatchingTasks_WhenDueDateProvided() throws Exception {
+        mockMvc.perform(get("/api/tasks?dueDate=2026-10-20"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)));
     }
 }
